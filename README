@@ -1,1 +1,8 @@
 Official git-annex builds for Windows and OSX.
+
+Note that the github repository is a mirror of my personal repository here:
+
+https://git.joeyh.name/index.cgi/gitannexbuilder.git/
+
+I do not use github as an issue tracker, and will not respond to
+communications there. File bugs on git-annex for build issues etc.
