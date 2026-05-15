@@ -80,7 +80,8 @@ jobs:
           ./Build/BuildVersion > dist/build-version
 
       - name: Print git-annex version
-        run: git annex version
+        working-directory: ./git-annex
+        run: ./tmp/git-annex version
 
       - name: Run tests
         working-directory: ./git-annex
