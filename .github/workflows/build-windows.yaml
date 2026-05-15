@@ -112,7 +112,7 @@ jobs:
       - name: Build the installer
         working-directory: ./git-annex
         run: |
-          stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
+          stack ghc -Wall -fno-warn-tabs --no-haddock --package nsis Build/NullSoftInstaller.hs
           TMP="$PWD" ./Build/NullSoftInstaller
 
       - name: Install git-annex using the installer
