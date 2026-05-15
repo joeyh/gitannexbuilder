@@ -1,0 +1,157 @@
+name: Build git-annex on Windows
+
+on:
+  push:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  LANG: C.utf-8
+
+jobs:
+  build-package:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+        # we fetch shallow, assuming the last 1 month still has a
+        # usable tag to determine a version
+      - name: Clone git-annex
+        run: |
+          git clone --no-checkout --shallow-since 1.month.ago git://git-annex.branchable.com/ git-annex
+
+      - name: Checkout git-annex
+        # we exclude doc/ -- it has filenames so long that the FS
+        # on windows barfs
+        working-directory: ./git-annex
+        run: |
+          git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
+          git checkout HEAD doc/license ':(glob)doc/*.mdwn' ':(glob)doc/logo*'
+
+      - name: Setup Haskell
+        uses: haskell-actions/setup@v2
+        with:
+          enable-stack: true
+          stack-no-global: true
+
+      - name: Handle long filenames
+        run: git config --system core.longpaths true
+
+      - name: Get build version
+        id: build-version
+        working-directory: ./git-annex
+        run: |
+          mkdir -p dist
+          version="$(git describe HEAD | sed -e 's/-/+git/')"
+          arch=x64
+          echo "Building $version"
+          echo "version=${version}_$arch" >> "$GITHUB_OUTPUT"
+
+      - name: Download and "install" libmagic for windows
+        working-directory: ./git-annex
+        run: |
+          gh release download -R datalad/file-windows -p file-windows-dist.zip
+          unzip file-windows-dist.zip
+          cp libmagic-1.dll libmagic.dll
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable building with magic
+        working-directory: ./git-annex
+        run: |
+          sed -i -e 's/magicmime: false/magicmime: true/' stack.yaml
+
+      - name: Set UPGRADE_LOCATION
+        run: |
+          # This tells git-annex where to upgrade itself from.
+          echo "UPGRADE_LOCATION=http://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe" >> "$GITHUB_ENV"
+
+      - name: Run stack --version
+        working-directory: ./git-annex
+        run: stack --version
+
+      - name: stack setup
+        working-directory: ./git-annex
+        run: stack setup
+
+      # At this point, stack.yaml.lock exists, so we can activate the cache
+
+      - name: Enable Stack cache
+        uses: actions/cache@v4
+        with:
+          path: 'C:\sr\snapshots'
+          key: cache-stack-windows-${{ hashFiles('stack.yaml.lock') }}-${{ hashFiles('git-annex.cabal') }}
+          restore-keys: |
+            cache-stack-windows-
+
+      - name: Build dependencies
+        working-directory: ./git-annex
+        run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
+
+      - name: Update version info for git rev being built.
+        working-directory: ./git-annex
+        run: |
+          stack ghc --no-haddock Build/BuildVersion.hs
+          ./Build/BuildVersion > dist/build-version
+
+      - name: Build git-annex
+        working-directory: ./git-annex
+        run: stack install --no-haddock --local-bin-path .
+
+      - name: Install NSIS
+        shell: pwsh
+        run: |
+          choco install nsis -y
+          echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Build the installer
+        working-directory: ./git-annex
+        run: |
+          stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
+          TMP="$PWD" ./Build/NullSoftInstaller
+
+      - name: Install git-annex using the installer
+        working-directory: ./git-annex
+        shell: powershell
+        run: |
+          ./git-annex-installer.exe /S
+
+      - name: Check that magic files are installed
+        run: |
+          GIT_ANNEX_PATH="$(type -p git-annex)"
+          echo "git-annex is at $GIT_ANNEX_PATH"
+          GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
+          ls "$GIT_ANNEX_DIR"/*magic* "$GIT_ANNEX_DIR"/*gnurx*
+          ls "$GIT_ANNEX_DIR"/../share/misc/*magic*
+
+      - name: Check git-annex version for some expected build flags
+        run: |
+          flags=$(git annex version | grep 'build flags:')
+          for f in Assistant MagicMime Servant S3; do
+            echo -n "Checking for $f: "
+            echo "$flags" | grep --color "$f" || { echo "FAIL"; exit 1; }
+          done
+
+      - name: Print git-annex version
+        run: git annex version
+
+      - name: Run tests
+        run: |
+          git config --global user.email "test@example.com"
+          git config --global user.name "Test User"
+
+          timeout 3600 git annex test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: git-annex-windows-installer
+          path: |
+            git-annex/git-annex-installer.exe
+            git-annex/dist/build-version
+          overwrite: true

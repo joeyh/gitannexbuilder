@@ -1,0 +1,20 @@
+The .github/ files are derived from https://github.com/datalad/git-annex
+and from https://github.com/psychoinformatics-de/git-annex-wheel
+
+https://github.com/datalad/git-annex copyright on those files is
+2020-2026 DataLad Team <team@datalad.org>
+and they are MIT licensed.
+
+https://github.com/psychoinformatics-de/git-annex-wheel has the following
+license and copyright information for those files:
+
+Copyright: © 2020- John T. Wodder II <git@varonathe.org>
+           © 2020- Yaroslav Halchenko <debian@onerussian.com>
+           © 2025- Michael Hanke <mih@ngln.eu>
+License: AGPL-3+
+
+The subsequent changes, and the rest of this repository is covered by the
+following:
+
+Copyright: © 2026 Joey Hess <id@joeyh.name>
+License: AGPL-3+
