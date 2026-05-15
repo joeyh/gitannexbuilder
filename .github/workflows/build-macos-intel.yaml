@@ -66,18 +66,12 @@ jobs:
         working-directory: ./git-annex
         run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
 
-      - name: Update version info for git rev being built.
-        working-directory: ./git-annex
-        run: |
-          mkdir -p dist
-          stack ghc --no-haddock Build/BuildVersion.hs
-          ./Build/BuildVersion > dist/build-version
-
       - name: Build git-annex
         working-directory: ./git-annex
         run: make osxapp
 
       - name: Update version info for git rev being built.
+        working-directory: ./git-annex
         run: |
           mkdir -p dist
           make Build/BuildVersion
