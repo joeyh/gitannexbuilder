@@ -84,6 +84,7 @@ jobs:
       - name: Update version info for git rev being built.
         working-directory: ./git-annex
         run: |
+          mkdir -p dist
           stack ghc --no-haddock Build/BuildVersion.hs
           ./Build/BuildVersion > dist/build-version
 
