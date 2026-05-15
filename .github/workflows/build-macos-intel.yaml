@@ -27,7 +27,7 @@ jobs:
 
       - name: Set up system
         run: |
-          brew install libmagic pkg-config
+          brew install libmagic pkg-config coreutils
 
       - name: Setup Haskell
         uses: haskell-actions/setup@v2
