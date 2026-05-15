@@ -1,0 +1,104 @@
+name: Build git-annex on MacOS (15, Intel)
+
+on:
+  push:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  LANG: C.utf-8
+
+jobs:
+  build-package:
+    runs-on: macos-15-intel
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Clone git-annex
+        run: |
+          git clone --depth 1 git://git-annex.branchable.com/ git-annex
+
+      - name: Set up system
+        run: |
+          brew install libmagic pkg-config
+
+      - name: Setup Haskell
+        uses: haskell-actions/setup@v2
+        with:
+          enable-stack: true
+          stack-no-global: true
+
+      - name: Configure build
+        run: |
+          echo OSX_MAGIC_FILE="$(brew list --verbose libmagic| grep magic.mgc | head -n 1)" >> "$GITHUB_ENV"
+          echo BUILDERCOMMONOPTIONS="" >> "$GITHUB_ENV"
+          echo BUILDER=stack >> "$GITHUB_ENV"
+          echo GHC="stack ghc --" >> "$GITHUB_ENV"
+
+      - name: Enable building with magic
+        working-directory: ./git-annex
+        run: |
+          perl -pli -e 's/magicmime: false/magicmime: true/' stack.yaml
+
+      - name: Run stack --version
+        working-directory: ./git-annex
+        run: stack --version
+
+      - name: stack setup
+        working-directory: ./git-annex
+        run: stack setup
+
+      # At this point, stack.yaml.lock exists, so we can activate the cache
+      - name: Enable Stack cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.stack
+          key: cache-stack-macos13-${{ hashFiles('stack.yaml.lock') }}-${{ hashFiles('git-annex.cabal') }}
+          restore-keys: |
+            cache-stack-macos13-
+
+      - name: Build dependencies
+        working-directory: ./git-annex
+        run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
+
+      - name: Update version info for git rev being built.
+        working-directory: ./git-annex
+        run: |
+          mkdir -p dist
+          stack ghc --no-haddock Build/BuildVersion.hs
+          ./Build/BuildVersion > dist/build-version
+
+      - name: Build git-annex
+        working-directory: ./git-annex
+        run: make osxapp
+
+      - name: Update version info for git rev being built.
+        run: |
+          mkdir -p dist
+          make Build/BuildVersion
+          ./Build/BuildVersion > dist/build-version
+
+      - name: Print git-annex version
+        run: git annex version
+
+      - name: Run tests
+        working-directory: ./git-annex
+        run: |
+          git config --global user.email "test@example.com"
+          git config --global user.name "Test User"
+
+          timeout 3600 make test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: git-annex-osx
+          path: |
+            git-annex/tmp/git-annex.dmg
+            git-annex/dist/build-version
+          overwrite: true
