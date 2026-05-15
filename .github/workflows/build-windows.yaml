@@ -75,7 +75,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: 'C:\sr\snapshots'
-          key: cache-stack-windows-${{ hashFiles('stack.yaml.lock') }}-${{ hashFiles('git-annex.cabal') }}
+          key: cache-stack-windows-${{ hashFiles('git-annex/stack.yaml.lock') }}-${{ hashFiles('git-annex/git-annex.cabal') }}
           restore-keys: |
             cache-stack-windows-
 

@@ -60,9 +60,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.stack
-          key: cache-stack-macos13-${{ hashFiles('stack.yaml.lock') }}-${{ hashFiles('git-annex.cabal') }}
+          key: cache-stack-macos15-${{ hashFiles('git-annex/stack.yaml.lock') }}-${{ hashFiles('git-annex/git-annex.cabal') }}
           restore-keys: |
-            cache-stack-macos13-
+            cache-stack-macos15-
 
       - name: Build dependencies
         working-directory: ./git-annex
