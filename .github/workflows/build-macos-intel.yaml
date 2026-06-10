@@ -27,7 +27,7 @@ jobs:
 
       - name: Set up system
         run: |
-          brew install libmagic pkg-config coreutils
+          brew install libmagic pkg-config coreutils botan
 
       - name: Setup Haskell
         uses: haskell-actions/setup@v2
@@ -38,7 +38,7 @@ jobs:
       - name: Configure build
         run: |
           echo OSX_MAGIC_FILE="$(brew list --verbose libmagic| grep magic.mgc | head -n 1)" >> "$GITHUB_ENV"
-          echo BUILDERCOMMONOPTIONS="" >> "$GITHUB_ENV"
+          echo BUILDERCOMMONOPTIONS="--stack-yaml stack-botan.yaml" >> "$GITHUB_ENV"
           echo BUILDER=stack >> "$GITHUB_ENV"
           echo GHC="stack ghc --" >> "$GITHUB_ENV"
 
@@ -66,7 +66,7 @@ jobs:
 
       - name: Build dependencies
         working-directory: ./git-annex
-        run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
+        run: make build-dependencies
 
       - name: Build git-annex
         working-directory: ./git-annex
