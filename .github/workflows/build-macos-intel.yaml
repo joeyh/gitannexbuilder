@@ -38,14 +38,14 @@ jobs:
       - name: Configure build
         run: |
           echo OSX_MAGIC_FILE="$(brew list --verbose libmagic| grep magic.mgc | head -n 1)" >> "$GITHUB_ENV"
-          echo BUILDERCOMMONOPTIONS="--stack-yaml stack-botan.yaml" >> "$GITHUB_ENV"
+          echo BUILDERCOMMONOPTIONS="" >> "$GITHUB_ENV"
           echo BUILDER=stack >> "$GITHUB_ENV"
           echo GHC="stack ghc --" >> "$GITHUB_ENV"
 
-      - name: Enable building with magic
+      - name: Enable building with magic and botan
         working-directory: ./git-annex
         run: |
-          perl -pli -e 's/magicmime: false/magicmime: true/' stack.yaml
+          perl -pl -e 's/magicmime: false/magicmime: true/' stack-botan.yaml > stack.yaml
 
       - name: Run stack --version
         working-directory: ./git-annex
