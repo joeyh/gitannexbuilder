@@ -53,6 +53,8 @@ jobs:
           curl -o botan.zip https://downloads.kitenet.net/git-annex/windows/dependencies/botan.zip
           unzip botan.zip
           rm botan.zip
+          echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1" >> $GITHUB_ENV
+          echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"   >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=/mingw/lib/pkgconfig" >> $GITHUB_ENV
 
       - name: Download and "install" libmagic for windows
