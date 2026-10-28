@@ -35,6 +35,8 @@ jobs:
 
       - name: Setup Haskell
         uses: haskell-actions/setup@v2
+        with:
+          ghc-version: ghc-9.10.3
 
       - name: Handle long filenames
         run: git config --system core.longpaths true
