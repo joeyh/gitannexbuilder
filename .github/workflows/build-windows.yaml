@@ -7,14 +7,14 @@ on:
 
 defaults:
   run:
-    shell: bash
+    shell: C:/msys64/usr/bin/bash.exe -e {0}
 
 env:
   LANG: C.utf-8
 
 jobs:
   build-package:
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
       - name: Checkout this repository
         uses: actions/checkout@v6
