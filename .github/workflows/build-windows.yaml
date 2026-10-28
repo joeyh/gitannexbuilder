@@ -54,6 +54,11 @@ jobs:
         with:
           botan-version: 3.13.0
 
+      - name: Copy botan dll
+        working-directory: ./git-annex
+        run: |
+          cp /c/msys64/mingw64/bin/libbotan-3.dll libbotan-3.dll
+
       - name: Download and "install" libmagic for windows
         working-directory: ./git-annex
         run: |

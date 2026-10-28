@@ -35,7 +35,7 @@ runs:
     run: |
       python3 ./configure.py --cc=gcc --os=mingw \
         --compiler-cache=sccache \
-        --build-targets=static,cli \
+        --build-targets=static,shared,cli \
         --without-documentation \
         --prefix="C:\msys64\mingw64"
       make
