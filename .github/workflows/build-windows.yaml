@@ -42,11 +42,17 @@ jobs:
       - name: Handle long filenames
         run: git config --system core.longpaths true
 
+      - name: Install pkg-config
+        run: |
+          echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
+          echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1" >> $GITHUB_ENV
+          echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"   >> $GITHUB_ENV
+          pacman --noconfirm -S mingw-w64-x86_64-pkg-config
+
       - name: Download and "install" botan for windows
         working-directory: ./git-annex
         run: |
           curl -o libbotan-3.dll https://downloads.kitenet.net/git-annex/windows/dependencies/botan.zip
-          echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
 
       - name: Download and "install" libmagic for windows
         working-directory: ./git-annex
