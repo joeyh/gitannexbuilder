@@ -48,11 +48,11 @@ jobs:
           choco install pkgconfiglite -y
 
       - name: Download and "install" botan for windows
-        working-directory: ./git-annex
+        working-directory: /
         run: |
           curl -o botan.zip https://downloads.kitenet.net/git-annex/windows/dependencies/botan.zip
           unzip botan.zip
-          mv botan/mingw /mingw
+          rm botan.zip
           echo "PKG_CONFIG_PATH=/mingw/lib/pkgconfig" >> $GITHUB_ENV
 
       - name: Download and "install" libmagic for windows
@@ -131,13 +131,6 @@ jobs:
           GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
           ls "$GIT_ANNEX_DIR"/*magic* "$GIT_ANNEX_DIR"/*gnurx*
           ls "$GIT_ANNEX_DIR"/../share/misc/*magic*
-
-      - name: Check that botan dll is installed
-        run: |
-          GIT_ANNEX_PATH="$(type -p git-annex)"
-          echo "git-annex is at $GIT_ANNEX_PATH"
-          GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
-          ls "$GIT_ANNEX_DIR"/*botan*
 
       - name: Check git-annex version for some expected build flags
         run: |
