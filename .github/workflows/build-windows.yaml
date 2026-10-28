@@ -42,6 +42,11 @@ jobs:
       - name: Handle long filenames
         run: git config --system core.longpaths true
 
+      - name: Download and "install" botan for windows
+        working-directory: ./git-annex
+        run: |
+          curl https://downloads.kitenet.net/git-annex/windows/dependencies/libbotan-3.dll
+
       - name: Download and "install" libmagic for windows
         working-directory: ./git-annex
         run: |
@@ -51,10 +56,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Enable building with magic
+      - name: Configure stack.yaml
         working-directory: ./git-annex
         run: |
-          sed -i -e 's/magicmime: false/magicmime: true/' stack.yaml
+          sed -e 's/magicmime: false/magicmime: true/' stack-botan.yaml > stack.yaml
 
       - name: Set UPGRADE_LOCATION
         run: |
@@ -118,6 +123,13 @@ jobs:
           GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
           ls "$GIT_ANNEX_DIR"/*magic* "$GIT_ANNEX_DIR"/*gnurx*
           ls "$GIT_ANNEX_DIR"/../share/misc/*magic*
+
+      - name: Check that botan dll is installed
+        run: |
+          GIT_ANNEX_PATH="$(type -p git-annex)"
+          echo "git-annex is at $GIT_ANNEX_PATH"
+          GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
+          ls "$GIT_ANNEX_DIR"/*botan*
 
       - name: Check git-annex version for some expected build flags
         run: |
