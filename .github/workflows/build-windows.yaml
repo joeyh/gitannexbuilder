@@ -47,7 +47,7 @@ jobs:
           echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
           echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1" >> $GITHUB_ENV
           echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"   >> $GITHUB_ENV
-          pacman --noconfirm -S mingw-w64-x86_64-pkg-config
+          C:\msys64\pacman --noconfirm -S mingw-w64-x86_64-pkg-config
 
       - name: Download and "install" botan for windows
         working-directory: ./git-annex
