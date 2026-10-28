@@ -49,12 +49,10 @@ jobs:
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-pkg-config
           echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
 
-      - name: Download and "install" botan for windows
-        working-directory: C:/
-        run: |
-          curl -o botan.zip https://downloads.kitenet.net/git-annex/windows/dependencies/botan.zip
-          unzip botan.zip
-          rm botan.zip
+      - name: Setup botan
+        uses: ./.github/actions/setup-botan
+        with:
+          botan-version: 3.13.0
 
       - name: Download and "install" libmagic for windows
         working-directory: ./git-annex
