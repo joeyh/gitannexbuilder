@@ -3,7 +3,7 @@ description: "Build and install Botan"
 runs:
   using: composite
   steps:
-  - name:Checkout Botan repository
+  - name: Checkout Botan repository
     uses: actions/checkout@v5
     with:
       repository: randombit/botan
