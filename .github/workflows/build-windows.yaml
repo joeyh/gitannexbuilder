@@ -7,7 +7,7 @@ on:
 
 defaults:
   run:
-    shell: C:/msys64/usr/bin/bash.exe -e {0}
+    shell: bash
 
 env:
   LANG: C.utf-8
@@ -43,11 +43,9 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: Install pkg-config
+        shell: pwsh
         run: |
-          echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
-          echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1" >> $GITHUB_ENV
-          echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"   >> $GITHUB_ENV
-          C:/msys64/mingw64/bin/pacman --noconfirm -S mingw-w64-x86_64-pkg-config
+          choco install pkgconfiglite -y
 
       - name: Download and "install" botan for windows
         working-directory: ./git-annex
