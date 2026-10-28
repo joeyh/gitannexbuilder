@@ -1,9 +1,5 @@
 name: "Set up Botan"
-description: "Build and install a specific Botan version from source"
-inputs:
-  botan-version:
-    required: true
-    description: "Botan version"
+description: "Build and install Botan"
 runs:
   using: composite
   steps:
@@ -12,7 +8,7 @@ runs:
     with:
       repository: randombit/botan
       path: ./tmp-botan
-      ref: ${{ inputs.botan-version }}
+      ref: 3.13.0
 
   ### Cache ###
 
@@ -25,7 +21,7 @@ runs:
       create-symlink: true
       # Use sccache on Windows, otherwise use ccache
       variant: ${{ runner.os == 'Windows' && 'sccache' || 'ccache' }}
-      key: setup-botan-${{ runner.os }}-Botan-${{ inputs.botan-version }}
+      key: setup-botan-${{ runner.os }}-Botan-3.13.0
       evict-old-files: 'job'
       max-size: 50M
 

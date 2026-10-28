@@ -51,8 +51,6 @@ jobs:
 
       - name: Setup botan
         uses: ./.github/actions/setup-botan
-        with:
-          botan-version: 3.13.0
 
       - name: Download and "install" libmagic for windows
         working-directory: ./git-annex
