@@ -57,10 +57,6 @@ jobs:
         with:
           botan-version: 3.13.0
 
-      - name: Probe libunwind.dll
-        run: |
-          (find /c/| grep libunwind) || true
-
       - name: Download and "install" libmagic for windows
         working-directory: ./git-annex
         run: |
@@ -104,12 +100,12 @@ jobs:
         working-directory: ./git-annex
         run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
 
-      - name: Update version info for git rev being built.
-        working-directory: ./git-annex
-        run: |
-          mkdir -p dist
-          stack ghc --no-haddock Build/BuildVersion.hs
-          ./Build/BuildVersion > dist/build-version
+      #- name: Update version info for git rev being built.
+      #  working-directory: ./git-annex
+      #  run: |
+      #    mkdir -p dist
+      #    stack ghc --no-haddock Build/BuildVersion.hs
+      #    ./Build/BuildVersion > dist/build-version
 
       - name: Build git-annex
         shell: C:/msys64/usr/bin/bash.exe -e '{0}'
