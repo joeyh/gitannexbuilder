@@ -57,6 +57,10 @@ jobs:
         with:
           botan-version: 3.13.0
 
+      - name: Probe libunwind.dll
+        run: |
+          find /c/msys64| grep libunwind
+
       - name: Download and "install" libmagic for windows
         working-directory: ./git-annex
         run: |
