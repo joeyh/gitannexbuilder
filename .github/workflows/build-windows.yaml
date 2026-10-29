@@ -33,8 +33,7 @@ jobs:
         # on windows barfs
         working-directory: ./git-annex
         run: |
-          git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
-          git checkout HEAD doc/license ':(glob)doc/*.mdwn' ':(glob)doc/logo*'
+          git checkout origin/quickbotan
 
       - name: Setup Haskell
         uses: haskell-actions/setup@v2
