@@ -62,7 +62,8 @@ jobs:
             --disable-documentation \
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
-            --extra-lib-dirs=C:/msys64/mingw64/lib
+            --extra-lib-dirs=C:/msys64/mingw64/lib \
+            --enable-executable-static
 
       - name: Build
         working-directory: ./git-annex
