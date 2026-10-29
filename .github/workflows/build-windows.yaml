@@ -26,7 +26,7 @@ jobs:
 
       - name: Clone git-annex
         run: |
-          git clone --no-checkout --depth 1 git://git-annex.branchable.com/ git-annex
+          git clone --branch quickbotan --no-checkout --depth 1 git://git-annex.branchable.com/ git-annex
 
       - name: Checkout git-annex
         # we exclude doc/ -- it has filenames so long that the FS
