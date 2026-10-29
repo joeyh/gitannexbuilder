@@ -54,3 +54,5 @@ runs:
       # check that the Botan executable runs successfully
       which botan
       botan --version
+      botan config libs
+
