@@ -54,6 +54,7 @@ jobs:
           botan-version: 3.13.0
 
       - name: Configure
+        working-directory: ./git-annex
         run: |
           cabal configure \
             --enable-tests \
@@ -64,6 +65,7 @@ jobs:
             --extra-lib-dirs=C:/msys64/mingw64/lib
 
       - name: Build
+        working-directory: ./git-annex
         run: |
             cabal build
             cabal run
