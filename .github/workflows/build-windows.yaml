@@ -127,6 +127,9 @@ jobs:
         shell: powershell
         run: |
           ./git-annex-installer.exe /S
+      
+      - name: Print git-annex version
+        run: git annex version
 
       - name: Check that magic files are installed
         run: |
@@ -143,9 +146,6 @@ jobs:
             echo -n "Checking for $f: "
             echo "$flags" | grep --color "$f" || { echo "FAIL"; exit 1; }
           done
-
-      - name: Print git-annex version
-        run: git annex version
 
       - name: Run tests
         run: |
