@@ -106,7 +106,7 @@ jobs:
       - name: Build git-annex
         shell: C:/msys64/usr/bin/bash.exe -e '{0}'
         working-directory: ./git-annex
-        run: stack install --no-haddock --local-bin-path . --ghc-options="-optl /c/mingw64/bin/libstdc++-6.dll"
+        run: stack install --no-haddock --local-bin-path . --ghc-options="-optl C:/mingw64/bin/libstdc++-6.dll"
 
       - name: Install NSIS
         shell: pwsh
