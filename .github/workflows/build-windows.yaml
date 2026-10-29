@@ -114,7 +114,9 @@ jobs:
         # -optl forces use of the stdc++ that botan was built
         # with, which is not the one that -lstdc++ would usually
         # link.
-        run: stack install --no-haddock --local-bin-path . --ghc-options="-optl C:/mingw64/bin/libstdc++-6.dll"
+        run: 
+          find /c/mingw64 | grep libstdc
+          stack install --no-haddock --local-bin-path . --ghc-options="-optl C:/mingw64/bin/libstdc++-6.dll"
 
       - name: Build the installer
         working-directory: ./git-annex
