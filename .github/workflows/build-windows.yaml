@@ -59,7 +59,7 @@ jobs:
 
       - name: Probe libunwind.dll
         run: |
-          find /c/msys64| grep libunwind
+          (find /c/| grep libunwind) || true
 
       - name: Download and "install" libmagic for windows
         working-directory: ./git-annex
