@@ -55,4 +55,4 @@ runs:
       which botan
       botan --version
       botan config libs
-
+      ldd $(which botan)
