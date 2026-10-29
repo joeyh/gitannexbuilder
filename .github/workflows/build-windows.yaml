@@ -104,8 +104,9 @@ jobs:
           ./Build/BuildVersion > dist/build-version
 
       - name: Build git-annex
+        shell: C:/msys64/usr/bin/bash.exe -e '{0}'
         working-directory: ./git-annex
-        run: stack install --no-haddock --local-bin-path . --ghc-options="-optl -lstdc++"
+        run: stack install --no-haddock --local-bin-path . --ghc-options="-optl -lstdc++ -optl -lcrypt32 -optl -lws2_32"
 
       - name: Install NSIS
         shell: pwsh
