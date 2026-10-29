@@ -114,7 +114,7 @@ jobs:
         # Forces use of the libstdc++ that botan was built
         # with, which is not the one that -lstdc++ would usually
         # link.
-        run: stack install --no-haddock --local-bin-path . --ghc-options="-optl C:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/libstdc++.dll.a"
+        run: stack install --no-haddock --local-bin-path . --ghc-options="-optl C:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/libstdc++.a"
 
       - name: Build the installer
         working-directory: ./git-annex
