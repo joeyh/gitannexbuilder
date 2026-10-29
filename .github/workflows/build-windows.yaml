@@ -111,7 +111,7 @@ jobs:
       - name: Build git-annex
         shell: C:/msys64/usr/bin/bash.exe -e '{0}'
         working-directory: ./git-annex
-        # -optl forces use of the stdc++ that botan was built
+        # Forces use of the libstdc++ that botan was built
         # with, which is not the one that -lstdc++ would usually
         # link.
         run: stack install --no-haddock --local-bin-path . --ghc-options="-optl C:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/libstdc++.dll.a"
@@ -127,9 +127,6 @@ jobs:
         shell: powershell
         run: |
           ./git-annex-installer.exe /S
-      
-      - name: Print git-annex version
-        run: git annex version
 
       - name: Check that magic files are installed
         run: |
@@ -138,7 +135,10 @@ jobs:
           GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
           ls "$GIT_ANNEX_DIR"/*magic* "$GIT_ANNEX_DIR"/*gnurx*
           ls "$GIT_ANNEX_DIR"/../share/misc/*magic*
-
+      
+      - name: Print git-annex version
+        run: git annex version
+      
       - name: Check git-annex version for some expected build flags
         run: |
           flags=$(git annex version | grep 'build flags:')
