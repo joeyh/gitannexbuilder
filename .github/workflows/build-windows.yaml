@@ -136,12 +136,18 @@ jobs:
           GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
           ls "$GIT_ANNEX_DIR"/*.dll
           ls "$GIT_ANNEX_DIR"/../share/misc/*magic*
+      
+      - name: Remove msys from path
+        run: |
+          rm "$GITHUB_PATH"
 
       - name: Print git-annex version
+        shell: bash
         run: |
           git annex version
       
       - name: Check git-annex version for some expected build flags
+        shell: bash
         run: |
           flags=$(git annex version | grep 'build flags:')
           for f in Assistant MagicMime Servant S3; do
@@ -150,6 +156,7 @@ jobs:
           done
 
       - name: Run tests
+        shell: bash
         run: |
           git config --global user.email "test@example.com"
           git config --global user.name "Test User"
