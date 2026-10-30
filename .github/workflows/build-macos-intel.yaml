@@ -1,7 +1,7 @@
 name: Build git-annex on MacOS (15, Intel)
 
 on:
-  push:
+  #push:
   schedule:
     - cron: "43 19 * * *"
 
