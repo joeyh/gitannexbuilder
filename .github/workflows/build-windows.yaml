@@ -40,12 +40,13 @@ jobs:
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-libbotan
 
       - name: Setup Haskell
+        id: setup-haskell
         uses: haskell-actions/setup@v2.12.1
         with:
           ghc-version: 9.10.3
           cabal-version: 3.16
 
-      - name: build git-annex
+      - name: cabal configure
         working-directory: ./git-annex
         run: |
           echo "import: https://www.stackage.org/lts-24.52/cabal.config" >> cabal.project
@@ -54,6 +55,36 @@ jobs:
             --extra-include-dirs=C:/msys64/mingw64/include \
             --extra-lib-dirs=C:/msys64/mingw64/lib \
             -fBotan -f-magicmime
+
+      # generate dist-newstyle/cache/plan.json used in caching
+      - name: generate cabal plan
+        working-directory: ./git-annex
+        run: |
+          cabal build all --dry-run
+
+      - name: Restore cache
+        uses: actions/cache/restore@v6
+        id: restore-cabal-cache
+        env:
+          key: cache-cabal-windows
+        with:
+          path: ${{ steps.setup-haskell.outputs.cabal-store }}
+          key: ${{ env.key }}-${{ hashFiles('dist-newstyle/cache/plan.json') }}
+          restore-keys: ${{ env.key }}-
+
+      - name: Build cabal dependencies
+        run: |
+          cabal build --only-dependencies
+
+      - name: Save cache
+        uses: actions/cache/save@v6
+         if: ${{ steps.restore-cabal-cache.outputs.cache-hit != 'true' }}
+         with:
+           path: ${{ steps.setup-haskell.outputs.cabal-store }}
+           key: ${{ steps.restore-cabal-cache.outputs.cache-primary-key }}
+
+      - name: Build git-annex
+        run:
           cabal build
           cabal install --installdir=.
           ./git-annex version
