@@ -43,14 +43,6 @@ jobs:
           echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"   >> $GITHUB_ENV
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-pkg-config
 
-      - name: Install libbotan
-        run: |
-          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-libbotan
-
-      - name: Install NSIS
-        run: |
-          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-nsis
-
       # the NSIS installer looks in pwd for the magic files currently
       # FIXME: make git-annex load the magic.mgc from the same directory as
       # its binary.
@@ -59,6 +51,16 @@ jobs:
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-file
           cp /c/msys64/mingw64/share/misc/magic.mgc git-annex/
           cp /c/msys64/mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
+          pkg-config --list-all |grep magic
+          pkg-config  libmagic --libs
+
+      - name: Install libbotan
+        run: |
+          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-libbotan
+
+      - name: Install NSIS
+        run: |
+          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-nsis
 
       - name: Setup Haskell
         id: setup-haskell
