@@ -35,12 +35,6 @@ jobs:
         run: |
           git checkout origin/quickbotan
 
-      - name: Setup Haskell
-        uses: haskell-actions/setup@v2.12.1
-        with:
-          ghc-version: 9.10.3
-          cabal-version: 3.16
-
       - name: Install pkg-config
         run: |
           echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1" >> $GITHUB_ENV
@@ -48,10 +42,15 @@ jobs:
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-pkg-config
           echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
 
-      - name: Setup botan
-        uses: ./.github/actions/setup-botan
+      - name: Install libbotan
+        run: |
+          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-libbotan
+
+      - name: Setup Haskell
+        uses: haskell-actions/setup@v2.12.1
         with:
-          botan-version: 3.13.0
+          ghc-version: 9.10.3
+          cabal-version: 3.16
 
       - name: dummy package
         run: |
