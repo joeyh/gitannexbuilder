@@ -13,10 +13,6 @@ Copyright: © 2020- John T. Wodder II <git@varonathe.org>
            © 2025- Michael Hanke <mih@ngln.eu>
 License: AGPL-3+
 
-.github/actions/setup-botan/action.yml is from
-https://github.com/haskell-cryptography/botan
-which uses the BSD 3-Clause License
-
 The subsequent changes, and the rest of this repository is covered by the
 following:
 

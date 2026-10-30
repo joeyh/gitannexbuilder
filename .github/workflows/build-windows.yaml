@@ -39,12 +39,12 @@ jobs:
         run: |
           echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1" >> $GITHUB_ENV
           echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"   >> $GITHUB_ENV
-          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-pkg-config
+          ghcup run -m -- pacman --noconfirm -S mingw-w64-ucrt-x86_64-pkgconf
           echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
 
       - name: Install libbotan
         run: |
-          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-libbotan
+          ghcup run -m -- pacman --noconfirm -S mingw-w64-ucrt-x86_64-libbotan
 
       - name: Setup Haskell
         uses: haskell-actions/setup@v2.12.1
@@ -52,35 +52,9 @@ jobs:
           ghc-version: 9.10.3
           cabal-version: 3.16
 
-      - name: dummy package
-        run: |
-          mkdir foo
-          cd foo
-          echo "Name: foo" > foo.cabal
-          echo "Version: 1" >> foo.cabal
-          echo "Cabal-Version: 1.12" >> foo.cabal
-          echo "Build-type: Simple" >> foo.cabal
-          echo "Executable foo" >> foo.cabal
-          echo "  Main-Is: foo.hs" >> foo.cabal
-          echo "  Build-Depends: botan-low (< 0.3), base" >> foo.cabal
-          echo "import qualified Botan.Low.Hash as Botan" >> foo.hs
-          echo "main = do" >> foo.hs
-          echo "  hasher <- Botan.hashInit Botan.SHA1" >> foo.hs
-          echo "  h <- Botan.hashFinal hasher" >> foo.hs
-          echo "  print h" >> foo.hs
-          cabal configure \
-            --extra-prog-path=C:/msys64/mingw64/bin \
-            --extra-include-dirs=C:/msys64/mingw64/include \
-            --extra-lib-dirs=C:/msys64/mingw64/lib
-          cabal build
-          cabal run
-
       - name: build git-annex
         working-directory: ./git-annex
         run: |
-          cabal configure \
-            --extra-prog-path=C:/msys64/mingw64/bin \
-            --extra-include-dirs=C:/msys64/mingw64/include \
-            --extra-lib-dirs=C:/msys64/mingw64/lib
+          cabal configure
           cabal build
           cabal run
