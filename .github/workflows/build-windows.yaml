@@ -39,12 +39,31 @@ jobs:
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-libbotan
 
+      - name: Install NSIS
+        uses: repolevedavaj/install-nsis@v1
+        with:
+          nsis-version: '3.12'
+
+      - name: Download and "install" libmagic for windows
+        working-directory: ./git-annex
+        run: |
+          gh release download -R datalad/file-windows -p file-windows-dist.zip
+          unzip file-windows-dist.zip
+          cp libmagic-1.dll libmagic.dll
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Setup Haskell
         id: setup-haskell
         uses: haskell-actions/setup@v2.12.1
         with:
           ghc-version: 9.10.3
           cabal-version: 3.16
+
+      - name: Set UPGRADE_LOCATION
+        run: |
+          # This tells git-annex where to upgrade itself from.
+          echo "UPGRADE_LOCATION=http://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe" >> "$GITHUB_ENV"
 
       - name: cabal configure
         working-directory: ./git-annex
@@ -54,7 +73,9 @@ jobs:
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
             --extra-lib-dirs=C:/msys64/mingw64/lib \
-            -fBotan -f-magicmime
+            --extra-include-dirs=$PWD \
+            --extra-lib-dirs=$PWD \
+            -fBotan -fMagicMime
 
       # generate git-annex/dist-newstyle/cache/plan.json used in caching
       - name: generate cabal plan
@@ -84,10 +105,65 @@ jobs:
           path: ${{ steps.setup-haskell.outputs.cabal-store }}
           key: ${{ steps.restore-cabal-cache.outputs.cache-primary-key }}
 
+      - name: Update version info for git rev being built.
+        working-directory: ./git-annex
+        run: |
+          mkdir -p dist
+          ghc -no-haddock Build/BuildVersion.hs
+          ./Build/BuildVersion > dist/build-version
+
       - name: Build git-annex
         working-directory: ./git-annex
         run: |
-          cabal build
+          cabal build --enable-executable-static
           cabal install --installdir=.
           ./git-annex version
           ldd ./git-annex
+
+      - name: Build the installer
+        working-directory: ./git-annex
+        run: |
+          ghc -no-haddock --package nsis -- -Wall -fno-warn-tabs Build/NullSoftInstaller.hs
+          TMP="$PWD" ./Build/NullSoftInstaller
+
+      - name: Install git-annex using the installer
+        working-directory: ./git-annex
+        shell: powershell
+        run: |
+          ./git-annex-installer.exe /S
+
+      - name: Check that magic files are installed
+        run: |
+          GIT_ANNEX_PATH="$(type -p git-annex)"
+          echo "git-annex is at $GIT_ANNEX_PATH"
+          GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
+          ls "$GIT_ANNEX_DIR"/*magic* "$GIT_ANNEX_DIR"/*gnurx*
+          ls "$GIT_ANNEX_DIR"/../share/misc/*magic*
+
+      - name: Print git-annex version
+        run: |
+          git annex version
+
+      - name: Check git-annex version for some expected build flags
+        run: |
+          flags=$(git annex version | grep 'build flags:')
+          for f in Assistant MagicMime Servant S3; do
+            echo -n "Checking for $f: "
+            echo "$flags" | grep --color "$f" || { echo "FAIL"; exit 1; }
+          done
+
+      - name: Run tests
+        run: |
+          git config --global user.email "test@example.com"
+          git config --global user.name "Test User"
+
+          timeout 3600 git annex test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: git-annex-windows-installer
+          path: |
+            git-annex/git-annex-installer.exe
+            git-annex/dist/build-version
+          overwrite: true
