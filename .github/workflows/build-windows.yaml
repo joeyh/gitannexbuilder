@@ -106,6 +106,8 @@ jobs:
         working-directory: ./git-annex
         run: |
           cabal install --installdir=.
+          ./git-annex version
+          ldd ./git-annex
       
       - name: Update version info
         working-directory: ./git-annex
