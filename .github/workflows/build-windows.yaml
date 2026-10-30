@@ -61,3 +61,5 @@ jobs:
             --extra-lib-dirs=C:/msys64/mingw64/lib
           cabal build
           cabal run
+          cabal install --installdir=.
+          ldd ./git-annex
