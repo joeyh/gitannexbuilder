@@ -86,7 +86,7 @@ jobs:
 
       - name: Build git-annex
         working-directory: ./git-annex
-        run:
+        run: |
           cabal build
           cabal install --installdir=.
           ./git-annex version
