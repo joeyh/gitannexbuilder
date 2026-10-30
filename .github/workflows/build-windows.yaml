@@ -44,13 +44,13 @@ jobs:
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-pkg-config
 
       # the NSIS installer looks in pwd for the magic files currently
+      #    cp /c/msys64/mingw64/share/misc/magic.mgc git-annex/
+      #    cp /c/msys64/mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
       # FIXME: make git-annex load the magic.mgc from the same directory as
       # its binary.
       - name: Install libmagic
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-file
-          cp /c/msys64/mingw64/share/misc/magic.mgc git-annex/
-          cp /c/msys64/mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
           pkg-config --list-all |grep magic
           pkg-config  libmagic --libs
 
