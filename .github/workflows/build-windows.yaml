@@ -118,7 +118,7 @@ jobs:
       - name: Build the installer
         working-directory: ./git-annex
         run: |
-          for f in $(ldd ./git-annex | sed 's/^\s*//' | sed 's/ .*//' | grep .dll | grep msys64); do
+          for f in $(ldd ./git-annex | sed 's/.*=> //' | sed 's/ .*//' | grep .dll | grep msys64); do
             cp -v "$f" .
           done
           cp git-annex.exe nullsoft-installer.exe
