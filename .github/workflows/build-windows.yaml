@@ -110,7 +110,7 @@ jobs:
       - name: Build git-annex
         working-directory: ./git-annex
         run: |
-          cabal build --enable-executable-static
+          cabal build
           cabal install --installdir=.
           ./git-annex version
           ldd ./git-annex
