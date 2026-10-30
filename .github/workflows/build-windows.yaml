@@ -73,6 +73,7 @@ jobs:
           restore-keys: ${{ env.key }}-
 
       - name: Build cabal dependencies
+        working-directory: ./git-annex
         run: |
           cabal build --only-dependencies
 
@@ -84,6 +85,7 @@ jobs:
           key: ${{ steps.restore-cabal-cache.outputs.cache-primary-key }}
 
       - name: Build git-annex
+        working-directory: ./git-annex
         run:
           cabal build
           cabal install --installdir=.
