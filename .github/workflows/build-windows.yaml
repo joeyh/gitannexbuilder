@@ -46,16 +46,16 @@ jobs:
       - name: cabal configure
         working-directory: ./botan
         run: |
-	        cabal configure \
-	          --enable-tests \
-	          --enable-benchmarks \
-	          --disable-documentation \
-	          ${{ runner.os == 'Windows' && '--extra-prog-path=C:/msys64/mingw64/bin' }} \
-	          ${{ runner.os == 'Windows' && '--extra-include-dirs=C:/msys64/mingw64/include' }} \
-	          ${{ runner.os == 'Windows' && '--extra-lib-dirs=C:/msys64/mingw64/lib' }} \
-	          --constraint="botan-bindings +pkg-config" \
-	          --ghc-options="-Werror"
-	        cat "cabal.project.local"
+          cabal configure \
+            --enable-tests \
+            --enable-benchmarks \
+            --disable-documentation \
+            ${{ runner.os == 'Windows' && '--extra-prog-path=C:/msys64/mingw64/bin' }} \
+            ${{ runner.os == 'Windows' && '--extra-include-dirs=C:/msys64/mingw64/include' }} \
+            ${{ runner.os == 'Windows' && '--extra-lib-dirs=C:/msys64/mingw64/lib' }} \
+            --constraint="botan-bindings +pkg-config" \
+            --ghc-options="-Werror"
+          cat "cabal.project.local"
 
       - name: cabal build
         working-directory: ./botan
