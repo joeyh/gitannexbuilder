@@ -28,6 +28,11 @@ jobs:
         run: |
           git clone --depth 1 git://git-annex.branchable.com/ git-annex
 
+      - name: Set UPGRADE_LOCATION
+        run: |
+          # This tells git-annex where to upgrade itself from.
+          echo "UPGRADE_LOCATION=http://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe" >> "$GITHUB_ENV"
+
       - name: Add msys to path
         run: |
           echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
@@ -46,7 +51,7 @@ jobs:
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-nsis
 
-      # the NSIS installer gets the files from this location currently
+      # the NSIS installer looks in pwd for the magic files currently
       # FIXME: make git-annex load the magic.mgc from the same directory as
       # its binary.
       - name: Install libmagic
@@ -62,11 +67,6 @@ jobs:
           ghc-version: 9.10.3
           cabal-version: 3.16
 
-      - name: Set UPGRADE_LOCATION
-        run: |
-          # This tells git-annex where to upgrade itself from.
-          echo "UPGRADE_LOCATION=http://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe" >> "$GITHUB_ENV"
-
       - name: cabal configure
         working-directory: ./git-annex
         run: |
@@ -75,8 +75,6 @@ jobs:
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
             --extra-lib-dirs=C:/msys64/mingw64/lib \
-            --extra-include-dirs=$PWD \
-            --extra-lib-dirs=$PWD \
             -fBotan -fMagicMime
 
       # generate git-annex/dist-newstyle/cache/plan.json used in caching
@@ -100,9 +98,7 @@ jobs:
         run: |
           cabal build --only-dependencies \
             --extra-prog-path=C:/msys64/mingw64/bin \
-            --extra-include-dirs=C:/msys64/mingw64/include \
-            --extra-include-dirs=$PWD \
-            --extra-lib-dirs=$PWD
+            --extra-include-dirs=C:/msys64/mingw64/include
 
       - name: Save cache
         uses: actions/cache/save@v6
@@ -110,13 +106,6 @@ jobs:
         with:
           path: ${{ steps.setup-haskell.outputs.cabal-store }}
           key: ${{ steps.restore-cabal-cache.outputs.cache-primary-key }}
-
-      - name: Update version info for git rev being built.
-        working-directory: ./git-annex
-        run: |
-          mkdir -p dist
-          ghc -no-haddock Build/BuildVersion.hs
-          ./Build/BuildVersion > dist/build-version
 
       - name: Build git-annex
         working-directory: ./git-annex
@@ -131,6 +120,11 @@ jobs:
         run: |
           ghc -no-haddock --package nsis -- -Wall -fno-warn-tabs Build/NullSoftInstaller.hs
           TMP="$PWD" ./Build/NullSoftInstaller
+
+      - name: Update version info
+        working-directory: ./git-annex
+        run: |
+          ./git-annex version --raw > dist/build-version
 
       - name: Install git-annex using the installer
         working-directory: ./git-annex
@@ -149,7 +143,7 @@ jobs:
       - name: Print git-annex version
         run: |
           git annex version
-
+      
       - name: Check git-annex version for some expected build flags
         run: |
           flags=$(git annex version | grep 'build flags:')
