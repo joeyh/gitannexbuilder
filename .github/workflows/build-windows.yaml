@@ -47,17 +47,14 @@ jobs:
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-nsis
 
-      # Not using mingw-w64-x86_64-file because it looks for magic.mgc
-      # in /mingw64/share/misc/magic.mgc. This build looks for it
-      # in the same directory as the binary.
-      - name: Download and "install" libmagic for windows
-        working-directory: ./git-annex
+      - name: Install libmagic
         run: |
-          gh release download -R datalad/file-windows -p file-windows-dist.zip
-          unzip file-windows-dist.zip
-          cp libmagic-1.dll libmagic.dll
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-file
+      # the NSIS installer gets the files from this location currently
+          cp /mingw64/share/misc/magic.mgc git-annex/
+          cp /mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
+      # FIXME: make git-annex load the magic.mgc from the same directory as
+      # its binary.
 
       - name: Setup Haskell
         id: setup-haskell
