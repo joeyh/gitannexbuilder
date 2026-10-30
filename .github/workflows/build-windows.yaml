@@ -69,5 +69,13 @@ jobs:
       - name: Build
         working-directory: ./git-annex
         run: |
-            cabal build
-            cabal run
+          cabal build \
+            --enable-tests \
+            --enable-benchmarks \
+            --disable-documentation \
+            --extra-prog-path=C:/msys64/mingw64/bin \
+            --extra-include-dirs=C:/msys64/mingw64/include \
+            --extra-lib-dirs=C:/msys64/mingw64/lib \
+            --enable-executable-static \
+            --ghc-options="-optl -lstdc++"
+          cabal run
