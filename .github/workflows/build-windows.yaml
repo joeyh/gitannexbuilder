@@ -53,8 +53,8 @@ jobs:
       - name: Install libmagic
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-file
-          cp /mingw64/share/misc/magic.mgc git-annex/
-          cp /mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
+          cp /c/mingw64/share/misc/magic.mgc git-annex/
+          cp /c/mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
 
       - name: Setup Haskell
         id: setup-haskell
