@@ -56,7 +56,7 @@ jobs:
             --extra-lib-dirs=C:/msys64/mingw64/lib \
             -fBotan -f-magicmime
 
-      # generate dist-newstyle/cache/plan.json used in caching
+      # generate git-annex/dist-newstyle/cache/plan.json used in caching
       - name: generate cabal plan
         working-directory: ./git-annex
         run: |
@@ -69,7 +69,7 @@ jobs:
           key: cache-cabal-windows
         with:
           path: ${{ steps.setup-haskell.outputs.cabal-store }}
-          key: ${{ env.key }}-${{ hashFiles('dist-newstyle/cache/plan.json') }}
+          key: ${{ env.key }}-${{ hashFiles('git-annex/dist-newstyle/cache/plan.json') }}
           restore-keys: ${{ env.key }}-
 
       - name: Build cabal dependencies
