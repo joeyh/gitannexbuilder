@@ -108,20 +108,21 @@ jobs:
           cabal install --installdir=.
           ./git-annex version
           ldd ./git-annex
+      
+      - name: Update version info
+        working-directory: ./git-annex
+        run: |
+          mkdir -p dist
+          ./git-annex version --raw > dist/build-version
 
       - name: Build the installer
         working-directory: ./git-annex
         run: |
           for f in $(ldd ./git-annex | sed 's/^\s*//' | sed 's/ .*//' | grep .dll | grep msys64); do
-            cp "$f" .
+            cp -v "$f" .
           done
           cp git-annex.exe nullsoft-installer.exe
           TMP="$PWD" ./nullsoft-installer
-
-      - name: Update version info
-        working-directory: ./git-annex
-        run: |
-          ./git-annex version --raw > dist/build-version
 
       - name: Install git-annex using the installer
         working-directory: ./git-annex
