@@ -64,7 +64,7 @@ jobs:
             --extra-include-dirs=C:/msys64/mingw64/include \
             --extra-lib-dirs=C:/msys64/mingw64/lib \
             --enable-executable-static \
-            --ghc-options="-optl -lstdc++"
+            --ld-options="-lstdc++"
 
       - name: Build
         working-directory: ./git-annex
@@ -77,5 +77,5 @@ jobs:
             --extra-include-dirs=C:/msys64/mingw64/include \
             --extra-lib-dirs=C:/msys64/mingw64/lib \
             --enable-executable-static \
-            --ghc-options="-optl -lstdc++"
+            --ld-options="-lstdc++"
           cabal run
