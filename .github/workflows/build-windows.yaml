@@ -112,11 +112,11 @@ jobs:
       - name: Build the installer
         working-directory: ./git-annex
         run: |
-          ghc -no-haddock -package nsis -v2 -- -Wall -fno-warn-tabs Build/NullSoftInstaller.hs
           for f in $(ldd ./git-annex | sed 's/^\s*//' | sed 's/ .*//' | grep .dll | grep msys64); do
             cp "$f" .
           done
-          TMP="$PWD" ./Build/NullSoftInstaller
+          cp git-annex.exe nullsoft-installer.exe
+          TMP="$PWD" ./nullsoft-installer
 
       - name: Update version info
         working-directory: ./git-annex
