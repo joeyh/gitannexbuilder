@@ -26,14 +26,7 @@ jobs:
 
       - name: Clone git-annex
         run: |
-          git clone --branch quickbotan --no-checkout --depth 1 git://git-annex.branchable.com/ git-annex
-
-      - name: Checkout git-annex
-        # we exclude doc/ -- it has filenames so long that the FS
-        # on windows barfs
-        working-directory: ./git-annex
-        run: |
-          git checkout origin/quickbotan
+          git clone --depth 1 git://git-annex.branchable.com/ git-annex
 
       - name: Install pkg-config
         run: |
@@ -58,7 +51,8 @@ jobs:
           cabal configure \
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
-            --extra-lib-dirs=C:/msys64/mingw64/lib
+            --extra-lib-dirs=C:/msys64/mingw64/lib \
+            -fBotan
           cabal build
           cabal run
           cabal install --installdir=.
