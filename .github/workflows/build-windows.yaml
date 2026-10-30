@@ -48,6 +48,7 @@ jobs:
       - name: build git-annex
         working-directory: ./git-annex
         run: |
+          echo "import: https://www.stackage.org/lts-24.52/cabal.config" >> cabal.project
           cabal configure \
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
