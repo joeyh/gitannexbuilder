@@ -47,14 +47,14 @@ jobs:
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-nsis
 
+      # the NSIS installer gets the files from this location currently
+      # FIXME: make git-annex load the magic.mgc from the same directory as
+      # its binary.
       - name: Install libmagic
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-file
-      # the NSIS installer gets the files from this location currently
           cp /mingw64/share/misc/magic.mgc git-annex/
           cp /mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
-      # FIXME: make git-annex load the magic.mgc from the same directory as
-      # its binary.
 
       - name: Setup Haskell
         id: setup-haskell
