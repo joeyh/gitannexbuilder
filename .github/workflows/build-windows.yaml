@@ -108,7 +108,6 @@ jobs:
       - name: Build git-annex
         working-directory: ./git-annex
         run: |
-          cabal build
           cabal install --installdir=.
           ./git-annex version
           ldd ./git-annex
@@ -116,7 +115,7 @@ jobs:
       - name: Build the installer
         working-directory: ./git-annex
         run: |
-          ghc -no-haddock --package nsis -- -Wall -fno-warn-tabs Build/NullSoftInstaller.hs
+          ghc -no-haddock -package nsis -- -Wall -fno-warn-tabs Build/NullSoftInstaller.hs
           TMP="$PWD" ./Build/NullSoftInstaller
 
       - name: Update version info
