@@ -98,7 +98,8 @@ jobs:
         run: |
           cabal build --only-dependencies \
             --extra-prog-path=C:/msys64/mingw64/bin \
-            --extra-include-dirs=C:/msys64/mingw64/include
+            --extra-include-dirs=C:/msys64/mingw64/include \
+            --extra-lib-dirs=C:/msys64/mingw64/lib
 
       - name: Save cache
         uses: actions/cache/save@v6
