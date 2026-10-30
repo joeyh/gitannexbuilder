@@ -72,7 +72,7 @@ jobs:
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
             --extra-lib-dirs=C:/msys64/mingw64/lib \
-            -fMagicMime -f-OsPath -fBlake3 -fXXH3
+            -fBotan -fMagicMime -f-OsPath -fBlake3 -fXXH3
 
       # generate git-annex/dist-newstyle/cache/plan.json used in caching
       - name: generate cabal plan

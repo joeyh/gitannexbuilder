@@ -42,10 +42,10 @@ jobs:
           echo BUILDER=stack >> "$GITHUB_ENV"
           echo GHC="stack ghc --" >> "$GITHUB_ENV"
 
-      - name: Enable building with magic
+      - name: Enable building with magic and botan
         working-directory: ./git-annex
         run: |
-          perl -pl -e 's/magicmime: false/magicmime: true/' stack.yaml > stack.yaml
+          perl -pl -e 's/magicmime: false/magicmime: true/' stack-botan.yaml > stack.yaml
 
       - name: Run stack --version
         working-directory: ./git-annex
