@@ -48,7 +48,6 @@ jobs:
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-file
           cp /c/msys64/mingw64/share/misc/magic.mgc git-annex/
-          cp /c/msys64/mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
 
       - name: Install libbotan
         run: |
@@ -114,6 +113,9 @@ jobs:
         working-directory: ./git-annex
         run: |
           ghc -no-haddock -package nsis -- -Wall -fno-warn-tabs Build/NullSoftInstaller.hs
+          for f in $(ldd ./git-annex | sed 's/^\s*//' | sed 's/ .*//' | grep .dll | grep msys64); do
+            cp "$f" .
+          done
           TMP="$PWD" ./Build/NullSoftInstaller
 
       - name: Update version info
