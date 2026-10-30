@@ -42,17 +42,15 @@ jobs:
           echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1" >> $GITHUB_ENV
           echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"   >> $GITHUB_ENV
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-pkg-config
-
+      
       # the NSIS installer looks in pwd for the magic files currently
-      #    cp /c/msys64/mingw64/share/misc/magic.mgc git-annex/
-      #    cp /c/msys64/mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
       # FIXME: make git-annex load the magic.mgc from the same directory as
       # its binary.
       - name: Install libmagic
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-file
-          pkg-config --list-all |grep magic
-          pkg-config  libmagic --libs
+          cp /c/msys64/mingw64/share/misc/magic.mgc git-annex/
+          cp /c/msys64/mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
 
       - name: Install libbotan
         run: |
@@ -77,7 +75,7 @@ jobs:
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
             --extra-lib-dirs=C:/msys64/mingw64/lib \
-            -fBotan -f-MagicMime
+            -fBotan -fMagicMime
 
       # generate git-annex/dist-newstyle/cache/plan.json used in caching
       - name: generate cabal plan
