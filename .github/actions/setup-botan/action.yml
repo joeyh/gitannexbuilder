@@ -78,7 +78,7 @@ runs:
     run: |
       python3 ./configure.py --cc=gcc --os=mingw \
         --compiler-cache=sccache \
-        --build-targets=static,shared,cli \
+        --build-targets=static,cli \
         --without-documentation \
         --prefix="C:\msys64\mingw64"
       make
