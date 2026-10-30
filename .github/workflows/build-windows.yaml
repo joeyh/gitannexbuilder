@@ -7,19 +7,22 @@ on:
 
 defaults:
   run:
-    shell: bash
+    shell: C:/msys64/usr/bin/bash.exe -e {0}
 
 env:
   LANG: C.utf-8
 
 jobs:
   build-package:
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
       - name: Checkout this repository
         uses: actions/checkout@v6
         with:
           submodules: false
+
+      - name: Handle long filenames
+        run: git config --system core.longpaths true
 
       - name: Clone git-annex
         run: |
@@ -33,14 +36,22 @@ jobs:
           git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
           git checkout HEAD doc/license ':(glob)doc/*.mdwn' ':(glob)doc/logo*'
 
+      - name: Install pkg-config
+        run: |
+          echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1" >> $GITHUB_ENV
+          echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"   >> $GITHUB_ENV
+          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-pkg-config
+          echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
+
+      - name: Install libbotan
+        run: |
+          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-libbotan
+
       - name: Setup Haskell
         uses: haskell-actions/setup@v2
         with:
           enable-stack: true
           stack-no-global: true
-
-      - name: Handle long filenames
-        run: git config --system core.longpaths true
 
       - name: Download and "install" libmagic for windows
         working-directory: ./git-annex
@@ -51,10 +62,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Enable building with magic
+      - name: Comfigure stack.yaml
         working-directory: ./git-annex
         run: |
-          sed -i -e 's/magicmime: false/magicmime: true/' stack.yaml
+          sed -e 's/magicmime: false/magicmime: true/' stack-botan.yaml > stack.yaml
 
       - name: Set UPGRADE_LOCATION
         run: |
@@ -81,7 +92,13 @@ jobs:
 
       - name: Build dependencies
         working-directory: ./git-annex
-        run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
+        run: |
+          stack \
+            --extra-include-dirs=$PWD \
+            --extra-lib-dirs=$PWD \
+            --extra-include-dirs=C:/msys64/mingw64/include \
+            --extra-lib-dirs=:/msys64/mingw64/lib \
+            build --only-dependencies
 
       - name: Update version info for git rev being built.
         working-directory: ./git-annex
@@ -92,7 +109,15 @@ jobs:
 
       - name: Build git-annex
         working-directory: ./git-annex
-        run: stack install --no-haddock --local-bin-path .
+        run: |
+          stack \
+            --extra-include-dirs=$PWD \
+            --extra-lib-dirs=$PWD \
+            --extra-include-dirs=C:/msys64/mingw64/include \
+            --extra-lib-dirs=:/msys64/mingw64/lib \
+            install --no-haddock --local-bin-path .
+            ldd ./git-annex
+            ./git-annex version
 
       - name: Install NSIS
         shell: pwsh
