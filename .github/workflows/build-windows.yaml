@@ -28,10 +28,9 @@ jobs:
         run: |
           git clone --depth 1 git://git-annex.branchable.com/ git-annex
 
-      - name: Add msys and mingw64 to path
+      - name: Add msys to path
         run: |
           echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
-          echo "C:/mingw64/bin" >> "$GITHUB_PATH"
 
       - name: Install pkg-config
         run: |
@@ -53,8 +52,8 @@ jobs:
       - name: Install libmagic
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-file
-          cp /c/mingw64/share/misc/magic.mgc git-annex/
-          cp /c/mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
+          cp /c/msys64/mingw64/share/misc/magic.mgc git-annex/
+          cp /c/msys64/mingw64/bin/libmagic-1.dll git-annex/libmagic.dll
 
       - name: Setup Haskell
         id: setup-haskell
