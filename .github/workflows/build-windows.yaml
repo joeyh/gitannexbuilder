@@ -82,9 +82,9 @@ jobs:
           echo "  h <- Botan.hashFinal hasher" >> foo.hs
           echo "  print h" >> foo.hs
           cabal configure \
-            --extra-prog-path=C:/msys64/mingw64/bin' \
-            --extra-include-dirs=C:/msys64/mingw64/include' \
-            --extra-lib-dirs=C:/msys64/mingw64/lib'
+            --extra-prog-path=C:/msys64/mingw64/bin \
+            --extra-include-dirs=C:/msys64/mingw64/include \
+            --extra-lib-dirs=C:/msys64/mingw64/lib
           cabal build
           cabal run
 
