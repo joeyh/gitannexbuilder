@@ -55,6 +55,6 @@ jobs:
             --extra-lib-dirs=C:/msys64/mingw64/lib \
             -fBotan -f-magicmime
           cabal build
-          cabal run
           cabal install --installdir=.
+          ./git-annex version
           ldd ./git-annex
