@@ -43,9 +43,7 @@ jobs:
           echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"   >> $GITHUB_ENV
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-pkg-config
       
-      # the NSIS installer looks in pwd for the magic files currently
-      # FIXME: make git-annex load the magic.mgc from the same directory as
-      # its binary.
+      # the NSIS installer looks in pwd for the magic file
       - name: Install libmagic
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-file
@@ -75,7 +73,7 @@ jobs:
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
             --extra-lib-dirs=C:/msys64/mingw64/lib \
-            -fBotan -fMagicMime -fOsPath -fBlake3 -fXXH3
+            -fBotan -fMagicMime -f-OsPath -fBlake3 -fXXH3
 
       # generate git-annex/dist-newstyle/cache/plan.json used in caching
       - name: generate cabal plan
