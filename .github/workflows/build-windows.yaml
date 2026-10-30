@@ -28,22 +28,28 @@ jobs:
         run: |
           git clone --depth 1 git://git-annex.branchable.com/ git-annex
 
+      - name: Add msys and mingw64 to path
+        run: |
+          echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
+          echo "C:/mingw64/bin" >> "$GITHUB_PATH"
+
       - name: Install pkg-config
         run: |
           echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1" >> $GITHUB_ENV
           echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"   >> $GITHUB_ENV
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-pkg-config
-          echo "C:/msys64/mingw64/bin" >> "$GITHUB_PATH"
 
       - name: Install libbotan
         run: |
           ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-libbotan
 
       - name: Install NSIS
-        uses: repolevedavaj/install-nsis@v1
-        with:
-          nsis-version: '3.12'
+        run: |
+          ghcup run -m -- pacman --noconfirm -S mingw-w64-x86_64-nsis
 
+      # Not using mingw-w64-x86_64-file because it looks for magic.mgc
+      # in /mingw64/share/misc/magic.mgc. This build looks for it
+      # in the same directory as the binary.
       - name: Download and "install" libmagic for windows
         working-directory: ./git-annex
         run: |
@@ -96,7 +102,11 @@ jobs:
       - name: Build cabal dependencies
         working-directory: ./git-annex
         run: |
-          cabal build --only-dependencies
+          cabal build --only-dependencies \
+            --extra-prog-path=C:/msys64/mingw64/bin \
+            --extra-include-dirs=C:/msys64/mingw64/include \
+            --extra-include-dirs=$PWD \
+            --extra-lib-dirs=$PWD
 
       - name: Save cache
         uses: actions/cache/save@v6
