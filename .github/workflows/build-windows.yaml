@@ -21,10 +21,6 @@ jobs:
         with:
           submodules: false
 
-      - name: Clone haskell-cryptography/botan
-        run: |
-          git clone https://github.com/haskell-cryptography/botan
-
       - name: Setup Haskell
         uses: haskell-actions/setup@v2.12.1
         with:
@@ -43,28 +39,7 @@ jobs:
         with:
           botan-version: 3.13.0
 
-      - name: cabal configure
-        working-directory: ./botan
-        run: |
-          cabal configure \
-            --enable-tests \
-            --enable-benchmarks \
-            --disable-documentation \
-            ${{ runner.os == 'Windows' && '--extra-prog-path=C:/msys64/mingw64/bin' }} \
-            ${{ runner.os == 'Windows' && '--extra-include-dirs=C:/msys64/mingw64/include' }} \
-            ${{ runner.os == 'Windows' && '--extra-lib-dirs=C:/msys64/mingw64/lib' }} \
-            --constraint="botan-bindings +pkg-config" \
-            --ghc-options="-Werror"
-          cat "cabal.project.local"
-
-      - name: cabal build
-        working-directory: ./botan
-        run: |
-          cabal build all
-      
-
-      - name: use botan-low in another package
-        working-directory: ./botan
+      - name: use botan-low in a package
         run: |
           mkdir foo
           cd foo
@@ -87,8 +62,3 @@ jobs:
             --extra-lib-dirs=C:/msys64/mingw64/lib
           cabal build
           cabal run
-
-      #- name: cabal test
-      #  working-directory: ./botan
-      #  run: |
-      #    cabal test all -j1 --test-show-details=direct
