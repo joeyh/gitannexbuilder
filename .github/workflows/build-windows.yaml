@@ -75,7 +75,7 @@ jobs:
           echo "Build-type: Simple" >> foo.cabal
           echo "Executable foo" >> foo.cabal
           echo "  Main-Is: foo.hs" >> foo.cabal
-          echo "Build-Depends: botan-low (< 0.3), base" >> foo.cabal
+          echo "  Build-Depends: botan-low (< 0.3), base" >> foo.cabal
           echo "import qualified Botan.Low.Hash as Botan" >> foo.hs
           echo "main = do" >> foo.hs
           echo "  hasher <- Botan.hashInit Botan.SHA1" >> foo.hs
