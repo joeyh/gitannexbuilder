@@ -52,14 +52,18 @@ jobs:
           ghc-version: 9.10.3
           cabal-version: 3.16
 
+      - name: Configure stack
+        working-directory: ./git-annex
+        run: |
+          sed -e 's/magicmime: false/magicmime: true/' stack-botan.yaml > stack.yaml
+        #  stack config set system-ghc true --global
+        #  stack config set install-ghc false --global
+
       - name: build git-annex
         working-directory: ./git-annex
         run: |
-          cabal configure \
-            --extra-prog-path=C:/msys64/mingw64/bin \
-            --extra-include-dirs=C:/msys64/mingw64/include \
-            --extra-lib-dirs=C:/msys64/mingw64/lib
-          cabal build
-          cabal run
-          cabal install --installdir=.
+          stack --extra-include-dirs=C:/msys64/mingw64/include \
+            --extra-lib-dirs=:/msys64/mingw64/lib \
+            install --no-haddock --local-bin-path .
+          ./git-annex
           ldd ./git-annex
