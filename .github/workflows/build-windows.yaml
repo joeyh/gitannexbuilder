@@ -63,8 +63,7 @@ jobs:
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
             --extra-lib-dirs=C:/msys64/mingw64/lib \
-            --enable-executable-static \
-            --ld-options="-lstdc++"
+            --enable-executable-static
 
       - name: Build
         working-directory: ./git-annex
@@ -77,5 +76,5 @@ jobs:
             --extra-include-dirs=C:/msys64/mingw64/include \
             --extra-lib-dirs=C:/msys64/mingw64/lib \
             --enable-executable-static \
-            --ld-options="-lstdc++"
+            --ld-options="C:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/libstdc++.a"
           cabal run
