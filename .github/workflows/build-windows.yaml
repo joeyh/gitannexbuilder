@@ -67,12 +67,11 @@ jobs:
       - name: cabal configure
         working-directory: ./git-annex
         run: |
-          echo "import: https://www.stackage.org/lts-24.52/cabal.config" >> cabal.project
+          cp cabal-stackage.project cabal.project.local
           cabal configure \
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
-            --extra-lib-dirs=C:/msys64/mingw64/lib \
-            -fBotan -fMagicMime -f-OsPath -fBlake3 -fXXH3
+            --extra-lib-dirs=C:/msys64/mingw64/lib
 
       # generate git-annex/dist-newstyle/cache/plan.json used in caching
       - name: generate cabal plan
