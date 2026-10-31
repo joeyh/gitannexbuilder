@@ -28,6 +28,14 @@ jobs:
         run: |
           git clone --depth 1 git://git-annex.branchable.com/ git-annex
 
+      - name: Configure build environment
+        id: myvars
+        working-directory: ./git-annex
+        run: |
+          cp cabal-stackage.project cabal.project
+          ghc_version=$(grep 'with-compiler' cabal-stackage.config | sed 's/.* ghc-//')
+          echo "GHC_VERSION=$ghc_version" >> $GITHUB_OUTPUT
+
       - name: Set UPGRADE_LOCATION
         run: |
           # This tells git-annex where to upgrade itself from.
@@ -61,13 +69,12 @@ jobs:
         id: setup-haskell
         uses: haskell-actions/setup@v2.12.1
         with:
-          ghc-version: 9.10.3
+          ghc-version: ${{ steps.myvars.outputs.GHC_VERSION }}}
           cabal-version: 3.16
 
       - name: cabal configure
         working-directory: ./git-annex
         run: |
-          cp cabal-stackage.project cabal.project
           cabal configure \
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
