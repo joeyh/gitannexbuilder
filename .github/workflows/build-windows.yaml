@@ -69,7 +69,7 @@ jobs:
         id: setup-haskell
         uses: haskell-actions/setup@v2.12.1
         with:
-          ghc-version: ${{ steps.myvars.outputs.GHC_VERSION }}}
+          ghc-version: ${{ steps.myvars.outputs.GHC_VERSION }}
           cabal-version: 3.16
 
       - name: cabal configure
