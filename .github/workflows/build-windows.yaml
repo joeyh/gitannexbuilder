@@ -112,7 +112,7 @@ jobs:
         working-directory: ./git-annex
         run: |
           cabal build
-          cabal install --installdir=.
+          cp $(cabal list-bin git-annex) ./git-annex.exe
           ./git-annex version
       
       - name: Update version info
