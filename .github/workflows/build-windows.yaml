@@ -67,7 +67,7 @@ jobs:
       - name: cabal configure
         working-directory: ./git-annex
         run: |
-          cp cabal-stackage.project cabal.project.local
+          cp cabal-stackage.project cabal.project
           cabal configure \
             --extra-prog-path=C:/msys64/mingw64/bin \
             --extra-include-dirs=C:/msys64/mingw64/include \
