@@ -24,6 +24,11 @@ jobs:
       - name: Clone git-annex
         run: |
           git clone --depth 1 git://git-annex.branchable.com/ git-annex
+      
+      - name: Set UPGRADE_LOCATION
+        run: |
+          # This tells git-annex where to upgrade itself from.
+          echo "UPGRADE_LOCATION=http://downloads.kitenet.net/git-annex/OSX/current/git-annex.dmg" >> "$GITHUB_ENV"
 
       - name: Set up system
         run: |
