@@ -50,7 +50,7 @@ jobs:
       - name: Enable building with magic
         working-directory: ./git-annex
         run: |
-          perl -pl -e 's/magicmime: false/magicmime: true/' stack.yaml > stack.yaml
+          perl -i -pl -e 's/magicmime: false/magicmime: true/' stack.yaml
 
       - name: Run stack --version
         working-directory: ./git-annex
